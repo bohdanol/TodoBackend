@@ -1,9 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Model.Interfaces.Repositories;
+using Model.Models;
 using Todo.Core.Data;
 
 namespace Todo.Core.Repositories
@@ -11,14 +8,14 @@ namespace Todo.Core.Repositories
     public class TaskRepository : ITaskRepository
     {
 
-        private readonly TodoDbContext _context;
+        private readonly MysqlDbContext _context;
 
-        public TaskRepository(TodoDbContext context)
+        public TaskRepository(MysqlDbContext context)
         {
             _context = context;
         }
 
-        public async Task AddAsync(Models.Task task)
+        public async Task AddAsync(Model.Models.TaskModel task)
         {
             await _context.Task.AddAsync(task);
             await _context.SaveChangesAsync();
@@ -34,17 +31,17 @@ namespace Todo.Core.Repositories
             }
         }
 
-        public async Task<IEnumerable<Models.Task>> GetAllAsync()
+        public async Task<IEnumerable<Model.Models.TaskModel>> GetAllAsync()
         {
             return await _context.Task.ToListAsync();
         }
 
-        public async Task<Models.Task> GetByIdAsync(int id)
+        public async Task<Model.Models.TaskModel> GetByIdAsync(int id)
         {
             return await _context.Task.FindAsync(id);
         }
 
-        public async Task UpdateAsync(Models.Task task)
+        public async Task UpdateAsync(Model.Models.TaskModel task)
         {
             var existingTask = await _context.Task.FindAsync(task.Id);
             if (existingTask == null)

@@ -1,0 +1,6 @@
+{
+  "ConnectionStrings": {
+    "DefaultConnection": "Server=localhost;Database=TodoList;User=root;Password=root;"
+  }
+
+}

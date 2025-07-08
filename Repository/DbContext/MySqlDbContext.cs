@@ -1,13 +1,13 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Todo.Core.Models;
+using Model.Models;
 
 namespace Todo.Core.Data
 {
-    public class TodoDbContext : DbContext
+    public class MysqlDbContext : DbContext
     {
-        public TodoDbContext(DbContextOptions<TodoDbContext> options) : base(options) { }
-        public DbSet<Models.Task> Task { get; set; }
-        public DbSet<Models.SubTask> SubTask { get; set; }
+        public MysqlDbContext(DbContextOptions<MysqlDbContext> options) : base(options) { }
+        public DbSet<Model.Models.TaskModel> Task { get; set; }
+        public DbSet<SubTaskModel> SubTask { get; set; }
 
         public required string DbPath { get; set; }
 
@@ -15,7 +15,7 @@ namespace Todo.Core.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<SubTask>()
+            modelBuilder.Entity<SubTaskModel>()
                 .HasOne(s => s.Task)
                 .WithMany(t => t.SubTasks)
                 .HasForeignKey(s => s.TaskId);

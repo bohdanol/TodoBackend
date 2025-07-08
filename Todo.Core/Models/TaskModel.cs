@@ -1,13 +1,13 @@
-﻿using System;
+﻿using Model.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Todo.Core.Models.Enums;
 
-namespace Todo.Core.Models
+namespace Model.Models
 {
-    public class Task
+    public class TaskModel
     {
         public int Id { get; set; }
         public required string Title { get; set; }
@@ -19,6 +19,6 @@ namespace Todo.Core.Models
         public Priority Priority { get; set; } = Priority.Low;
 
 
-        public List<SubTask> SubTasks { get; set; } = new();
+        public List<SubTaskModel> SubTasks { get; set; } = new();
     }
 }

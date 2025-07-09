@@ -14,6 +14,7 @@ namespace Model.Models
         public required string Title { get; set; }
         public string? Description { get; set; }
         public bool IsCompleted { get; set; }
+        public required DateTime DueDate { get; set; }
         public required DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
 

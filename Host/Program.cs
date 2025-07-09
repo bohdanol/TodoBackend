@@ -15,7 +15,7 @@ public class Program
 
         var mysqlDbSettings = new MysqlDbSettings
         {
-            ConnectionString = "",
+            ConnectionString = "Server=localhost;Database=TodoList;User=root;Password=root;",
             DatabaseName = "todo-list-db"
         };
 

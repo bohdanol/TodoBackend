@@ -6,8 +6,8 @@ namespace Todo.Core.Data
     public class MysqlDbContext : DbContext
     {
         public MysqlDbContext(DbContextOptions<MysqlDbContext> options) : base(options) { }
-        public DbSet<Model.Models.TaskModel> Task { get; set; }
-        public DbSet<SubTaskModel> SubTask { get; set; }
+        public DbSet<Model.Models.TaskModel> TaskModel { get; set; }
+        public DbSet<SubTaskModel> SubTaskModel { get; set; }
 
         public required string DbPath { get; set; }
 

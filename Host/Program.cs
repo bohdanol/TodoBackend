@@ -1,8 +1,6 @@
 ﻿using Host.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.OpenApi.Models;
 using Model.Dtos;
 
 namespace Host;
@@ -16,7 +14,7 @@ public class Program
         var mysqlDbSettings = new MysqlDbSettings
         {
             ConnectionString = "Server=localhost;Database=TodoList;User=root;Password=root;",
-            DatabaseName = "todo-list-db"
+            DatabaseName = "TodoList"
         };
 
         builder.Services.AddMySqlDbCollections(mysqlDbSettings);
@@ -27,11 +25,11 @@ public class Program
 
         var app = builder.Build();
 
-        if (app.Environment.IsDevelopment())
-        {
+        //if (app.Environment.IsDevelopment())
+        //{
             app.UseSwagger();
             app.UseSwaggerUI();
-        }
+        //}
         app.UseHttpsRedirection();
         app.UseAuthorization();
         app.MapControllers();

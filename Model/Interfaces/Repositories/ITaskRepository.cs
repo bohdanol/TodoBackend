@@ -7,11 +7,14 @@ using System.Threading.Tasks;
 
 namespace Model.Interfaces.Repositories;
 
-public interface  ITaskRepository
+public interface ITaskRepository
 {
-    Task<Models.TaskModel> GetByIdAsync(int id);
-    Task<IEnumerable<Models.TaskModel>> GetAllAsync();
-    Task AddAsync(Models.TaskModel task);
-    Task UpdateAsync(Models.TaskModel task);
-    Task DeleteAsync(int id);
+    Task<IEnumerable<TaskModel>> GetAllAsync();
+    Task<TaskModel> GetByIdAsync(int id);
+    Task<TaskModel> AddAsync(TaskModel task);
+    Task<TaskModel> UpdateAsync(TaskModel task);
+    Task<IEnumerable<TaskModel>> GetForToday();
+    Task<IEnumerable<TaskModel>> GetForTomorrow();
+    Task<IEnumerable<TaskModel>> GetForThisWeek();
+    Task<int?> DeleteAsync(int id);
 }

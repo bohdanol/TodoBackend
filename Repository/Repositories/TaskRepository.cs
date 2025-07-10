@@ -15,22 +15,6 @@ namespace Todo.Core.Repositories
             _context = context;
         }
 
-        public async Task AddAsync(TaskModel task)
-        {
-            await _context.TaskModel.AddAsync(task);
-            await _context.SaveChangesAsync();
-        }
-
-        public async Task DeleteAsync(int id)
-        {
-            var task = await _context.TaskModel.FindAsync(id);
-            if (task != null) 
-            { 
-                _context.TaskModel.Remove(task);
-                await _context.SaveChangesAsync();
-            }
-        }
-
         public async Task<IEnumerable<TaskModel>> GetAllAsync()
         {
             return await _context.TaskModel.ToListAsync();
@@ -41,7 +25,14 @@ namespace Todo.Core.Repositories
             return await _context.TaskModel.FindAsync(id);
         }
 
-        public async Task UpdateAsync(TaskModel task)
+        public async Task<TaskModel> AddAsync(TaskModel task)
+        {
+            var savedTask = await _context.TaskModel.AddAsync(task);
+            await _context.SaveChangesAsync();
+            return savedTask.Entity;
+        }
+
+        public async Task<TaskModel> UpdateAsync(TaskModel task)
         {
             var existingTask = await _context.TaskModel.FindAsync(task.Id);
             if (existingTask == null)
@@ -55,33 +46,70 @@ namespace Todo.Core.Repositories
             existingTask.Priority = task.Priority;
             existingTask.UpdatedAt = DateTime.UtcNow;
 
-            await _context.SaveChangesAsync();
+            var updatedTask = await _context.SaveChangesAsync();
+            return existingTask;
         }
 
-        public void GetTasksForToday()
+        public async Task<int?> DeleteAsync(int id)
         {
-            IQueryable<TaskModel> getQuery =
-                from task in _context.TaskModel
-                where task.DueDate.Date == DateTime.UtcNow.Date
-                select task;
+            var task = await _context.TaskModel.FindAsync(id);
+            if (task != null)
+            {
+                _context.TaskModel.Remove(task);
+                await _context.SaveChangesAsync();
+                return task.Id;
+            }
+            return null;
         }
 
-        public void GetTasksForTomorrow()
-        {
-            IQueryable<TaskModel> getQuery =
-                from task in _context.TaskModel
-                where task.DueDate.Date == DateTime.UtcNow.AddDays(1).Date
-                select task;
-        }
-
-        public static IQueryable<TaskModel> GetTasksForThisWeek()
+        public static IQueryable<TaskModel> GetTasksForTodayQuery(MysqlDbContext context)
         {
             var getQuery =
-                from task in TaskModel
+                from task in context.TaskModel
+                where task.DueDate.Date == DateTime.UtcNow.Date
+                select task;
+            return getQuery;
+        }
+
+        public static IQueryable<TaskModel> GetTasksForTomorrowQuery(MysqlDbContext context)
+        {
+            var getQuery =
+                from task in context.TaskModel
+                where task.DueDate.Date == DateTime.UtcNow.AddDays(1).Date
+                select task;
+            return getQuery;
+        }
+
+        public static IQueryable<TaskModel> GetTasksForThisWeekQuery(MysqlDbContext context)
+        {
+            var getQuery =
+                from task in context.TaskModel
                 where task.DueDate.Date >= DateTime.UtcNow.Date &&
                       task.DueDate.Date <= DateTime.UtcNow.AddDays(7).Date
                 select task;
             return getQuery;
+        }
+
+        public async Task<IEnumerable<TaskModel>> GetForToday()
+        {
+            return await _context.TaskModel
+                            .Where(task => task.DueDate.Date == DateTime.UtcNow.Date)
+                            .ToListAsync();
+        }
+
+        public async Task<IEnumerable<TaskModel>> GetForTomorrow()
+        {
+            return await _context.TaskModel
+                            .Where(task => task.DueDate.Date == DateTime.UtcNow.AddDays(1).Date)
+                            .ToListAsync();
+        }
+
+        public async Task<IEnumerable<TaskModel>> GetForThisWeek()
+        {
+            return await _context.TaskModel
+                            .Where(task => task.DueDate.Date >= DateTime.UtcNow.Date &&
+                                           task.DueDate.Date <= DateTime.UtcNow.AddDays(7).Date)
+                            .ToListAsync();
         }
     }
 }

@@ -33,7 +33,7 @@ public class TaskController(ITaskService taskService) : ControllerBase
     public async Task<IActionResult> AddTaskAsync(TaskModel task)
     {
         var addedTask = await taskService.AddAsync(task);
-        return CreatedAtAction(nameof(GetByIdAsync), new { id = addedTask.Id }, addedTask);
+        return Ok(addedTask);
     }
 
     [HttpGet("all")]
@@ -62,5 +62,16 @@ public class TaskController(ITaskService taskService) : ControllerBase
     {
         var tasks = await taskService.GetAllAsync(TaskRange.Tomorrow);
         return Ok(tasks);
+    }
+
+    [HttpDelete]
+    public async Task<IActionResult> DeleteAsync(int id)
+    {
+        var deletedTaskId = await taskService.DeleteAsync(id);
+        if (deletedTaskId == null)
+        {
+            return NotFound();
+        }
+        return Ok(deletedTaskId);
     }
 }

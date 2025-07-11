@@ -2,6 +2,14 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Model.Dtos;
+using Model.Interfaces.Repositories;
+using Model.Interfaces.Services;
+using Model.Services;
+using Todo.Core.Repositories;
+using Microsoft.EntityFrameworkCore;
+using Todo.Core.Data;
+using Microsoft.AspNetCore.Mvc;
+using Repository.Repositories;
 
 namespace Host;
 
@@ -22,6 +30,11 @@ public class Program
         builder.Services.AddControllers();
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
+
+        builder.Services.AddScoped<ITaskService, TaskService>();
+        builder.Services.AddScoped<ITaskRepository, TaskRepository>();
+        builder.Services.AddScoped<ISubTaskService, SubTaskService>();
+        builder.Services.AddScoped<ISubTaskRepository, SubTaskRepository>();
 
         var app = builder.Build();
 

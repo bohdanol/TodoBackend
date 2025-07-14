@@ -1,4 +1,5 @@
-﻿using Model.Enums;
+﻿using Model.Dtos;
+using Model.Enums;
 using Model.Models;
 using System;
 using System.Collections.Generic;
@@ -12,7 +13,7 @@ public interface ITaskService
 {
     Task<IEnumerable<TaskModel>> GetAllAsync(TaskRange? range);
     Task<TaskModel> GetByIdAsync(int id);
-    Task<TaskModel> AddAsync(TaskModel task);
-    Task<TaskModel> UpdateAsync(TaskModel task);
+    Task<TaskModel> AddAsync(TaskDto task);
+    Task<TaskModel> UpdateAsync(TaskDto task);
     Task<int?> DeleteAsync(int id);
 }

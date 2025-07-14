@@ -1,5 +1,7 @@
-﻿using Model.Interfaces.Repositories;
+﻿using Model.Dtos;
+using Model.Interfaces.Repositories;
 using Model.Interfaces.Services;
+using Model.Mappers;
 using Model.Models;
 using System;
 using System.Collections.Generic;
@@ -11,9 +13,10 @@ namespace Model.Services;
 
 public class SubTaskService(ISubTaskRepository subTaskRepository) : ISubTaskService
 {
-    public async Task<SubTaskModel> AddAsync(SubTaskModel subTask)
+    public async Task<SubTaskModel> AddAsync(SubTaskDto subTask)
     {
-        return await subTaskRepository.AddAsync(subTask);
+        var subTaskModel = SubTaskMapper.ToModel(subTask);
+        return await subTaskRepository.AddAsync(subTaskModel);
     }
 
     public async Task<int?> DeleteAsync(int id)
@@ -26,8 +29,9 @@ public class SubTaskService(ISubTaskRepository subTaskRepository) : ISubTaskServ
         return await subTaskRepository.getAllByTaskId(taskId);
     }
 
-    public async Task<SubTaskModel> UpdateAsync(SubTaskModel subTask)
+    public async Task<SubTaskModel> UpdateAsync(SubTaskDto subTask)
     {
-        return await subTaskRepository.UpdateAsync(subTask);
+        var subTaskModel = SubTaskMapper.ToModel(subTask);
+        return await subTaskRepository.UpdateAsync(subTaskModel);
     }
 }

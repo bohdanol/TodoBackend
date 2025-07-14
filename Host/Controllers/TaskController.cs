@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using Model.Dtos;
 using Model.Enums;
 using Model.Interfaces.Services;
 using Model.Models;
@@ -23,14 +24,14 @@ public class TaskController(ITaskService taskService) : ControllerBase
     }
 
     [HttpPut]
-    public async Task<IActionResult> UpdateTaskAsync(TaskModel task)
+    public async Task<IActionResult> UpdateTaskAsync(TaskDto task)
     {
         var updatedTask = await taskService.UpdateAsync(task);
         return Ok(updatedTask);
     }
 
     [HttpPost]
-    public async Task<IActionResult> AddTaskAsync(TaskModel task)
+    public async Task<IActionResult> AddTaskAsync(TaskDto task)
     {
         var addedTask = await taskService.AddAsync(task);
         return Ok(addedTask);

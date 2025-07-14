@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Model.Dtos;
 using Model.Interfaces.Services;
 using Model.Models;
 using System;
@@ -21,14 +22,14 @@ public class SubTaskController(ISubTaskService subTaskService) : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> AddAsync(SubTaskModel subTask)
+    public async Task<IActionResult> AddAsync(SubTaskDto subTask)
     {
         var addedSubTask = await subTaskService.AddAsync(subTask);
         return Ok(addedSubTask);
     }
 
     [HttpPut]
-    public async Task<IActionResult> UpdateAsync(SubTaskModel subTask)
+    public async Task<IActionResult> UpdateAsync(SubTaskDto subTask)
     {
         var updatedSubTask = await subTaskService.UpdateAsync(subTask);
         return Ok(updatedSubTask);

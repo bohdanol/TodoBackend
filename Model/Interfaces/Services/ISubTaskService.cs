@@ -1,4 +1,5 @@
-﻿using Model.Models;
+﻿using Model.Dtos;
+using Model.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +11,7 @@ namespace Model.Interfaces.Services;
 public interface ISubTaskService
 {
     Task<IEnumerable<SubTaskModel>> getAllByTaskId(int taskId);
-    Task<SubTaskModel> AddAsync(SubTaskModel subTask);
-    Task<SubTaskModel> UpdateAsync(SubTaskModel subTask);
+    Task<SubTaskModel> AddAsync(SubTaskDto subTask);
+    Task<SubTaskModel> UpdateAsync(SubTaskDto subTask);
     Task<int?> DeleteAsync(int id);
 }

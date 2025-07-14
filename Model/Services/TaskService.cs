@@ -1,7 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Model.Dtos;
 using Model.Enums;
 using Model.Interfaces.Repositories;
 using Model.Interfaces.Services;
+using Model.Mappers;
 using Model.Models;
 using System;
 using System.Collections.Generic;
@@ -13,9 +15,10 @@ namespace Model.Services;
 
 public class TaskService(ITaskRepository taskRepository) : ITaskService
 {
-    public async Task<TaskModel> AddAsync(TaskModel task)
+    public async Task<TaskModel> AddAsync(TaskDto task)
     {
-        var addedTask = await taskRepository.AddAsync(task);
+        var taskModel = TaskMapper.ToModel(task);
+        var addedTask = await taskRepository.AddAsync(taskModel);
         return addedTask;
     }
 
@@ -46,9 +49,9 @@ public class TaskService(ITaskRepository taskRepository) : ITaskService
         return task;
     }
 
-    public Task<TaskModel> UpdateAsync(TaskModel task)
+    public Task<TaskModel> UpdateAsync(TaskDto task)
     {
-        var updatedTask = taskRepository.UpdateAsync(task);
-        return updatedTask;
+        var taskModel = TaskMapper.ToModel(task);
+        return taskRepository.UpdateAsync(taskModel);
     }
 }

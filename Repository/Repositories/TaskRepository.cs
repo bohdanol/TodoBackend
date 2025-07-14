@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Model.Dtos;
 using Model.Interfaces.Repositories;
 using Model.Models;
 using Todo.Core.Data;
@@ -25,7 +26,7 @@ public class TaskRepository : ITaskRepository
     {
         var taskWithSubtaskQuery = GetTaskWitSubTasksQuery(_context);
 
-        return await taskWithSubtaskQuery.Where(t => t.Id == id).FirstOrDefaultAsync();
+        return await taskWithSubtaskQuery.Where(t => t.Id == id).SingleOrDefaultAsync(); 
     }
 
     public async Task<TaskModel> AddAsync(TaskModel task)
@@ -92,7 +93,6 @@ public class TaskRepository : ITaskRepository
 
     static IQueryable<TaskModel> GetTaskWitSubTasksQuery(MysqlDbContext context)
     {
-        var res = context.Tasks.Include(t => t.SubTasks);
-        return res;
+        return context.Tasks.Include(t => t.SubTasks);
     }
 }

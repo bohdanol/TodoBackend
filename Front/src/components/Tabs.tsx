@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { getTasks } from '../api/tasks';
+import { getTasks } from '../api/tasks.ts';
 
 export default function Tabs({ activeFilter = 'all' }) {
   const location = useLocation();
@@ -10,17 +10,18 @@ export default function Tabs({ activeFilter = 'all' }) {
     { key: 'tomorrow', label: 'Tomorrow', path: '/tasks/tomorrow' },
     { key: 'this-week', label: 'This Week', path: '/tasks/this-week' },
     { key: 'all', label: 'All', path: '/tasks/all' },
-    { key: 'done', label: 'Done', path: '/tasks/done' }
+    { key: 'completed', label: 'Completed', path: '/tasks/completed?isCompleted=true' },
+    { key: 'uncompleted', label: 'Uncompleted', path: '/tasks/completed?isCompleted=false' }
   ];
 
-  useEffect(() => {
-    getTasks().then(tasks => {
-      console.log('Fetched tasks:', tasks);
-    });
-  }, []);
-
-
   const isActive = (tabPath) => {
+    // For paths with query parameters, check both pathname and search
+    if (tabPath.includes('?')) {
+      const [tabPathname, tabSearch] = tabPath.split('?');
+      return location.pathname === tabPathname && location.search === `?${tabSearch}`;
+    }
+    
+    // For paths without query parameters, just check pathname
     return location.pathname === tabPath || 
            (location.pathname === '/tasks' && tabPath === '/tasks/all');
   };
@@ -47,12 +48,12 @@ export default function Tabs({ activeFilter = 'all' }) {
           }}
           onMouseEnter={(e) => {
             if (!isActive(tab.path)) {
-              e.target.style.color = '#2c3e50';
+              (e.target as HTMLElement).style.color = '#2c3e50';
             }
           }}
           onMouseLeave={(e) => {
             if (!isActive(tab.path)) {
-              e.target.style.color = '#7f8c8d';
+              (e.target as HTMLElement).style.color = '#7f8c8d';
             }
           }}
         >

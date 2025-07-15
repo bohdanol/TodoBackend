@@ -35,6 +35,7 @@ public class Program
         builder.Services.AddScoped<ITaskRepository, TaskRepository>();
         builder.Services.AddScoped<ISubTaskService, SubTaskService>();
         builder.Services.AddScoped<ISubTaskRepository, SubTaskRepository>();
+        builder.Services.AddAutoMapper(cfg => cfg.AddProfile<MappingProfile>());
 
         var app = builder.Build();
 

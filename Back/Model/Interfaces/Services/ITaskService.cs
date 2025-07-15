@@ -11,7 +11,7 @@ namespace Model.Interfaces.Services;
 
 public interface ITaskService
 {
-    Task<IEnumerable<TaskModel>> GetAllAsync(TaskRange? range);
+    Task<IEnumerable<TaskModel>> GetAllAsync(TaskRange? range, String? isCompleted);
     Task<TaskModel> GetByIdAsync(int id);
     Task<TaskModel> AddAsync(TaskDto task);
     Task<TaskModel> UpdateAsync(TaskDto task);

@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Model.Dtos;
 using Model.Interfaces.Repositories;
 using Model.Models;
 using Todo.Core.Data;
@@ -16,9 +15,13 @@ public class TaskRepository : ITaskRepository
         _context = context;
     }
 
-    public async Task<IEnumerable<TaskModel>> GetAllAsync()
+    public async Task<IEnumerable<TaskModel>> GetAllAsync(String? isCompleted)
     {
         var tasks = GetTaskWitSubTasksQuery(_context);
+        if (isCompleted != null && bool.TryParse(isCompleted, out bool isCompletedValue))
+        { 
+            tasks = tasks.Where(t => t.IsCompleted == isCompletedValue);
+        }
         return await tasks.ToListAsync();
     }
 
@@ -85,9 +88,16 @@ public class TaskRepository : ITaskRepository
     public async Task<IEnumerable<TaskModel>> GetForThisWeek()
     {
         var taskWithSubTaskQuery = GetTaskWitSubTasksQuery(_context);
+        var today = DateTime.UtcNow.Date;
+        
+        var daysFromMonday = ((int)today.DayOfWeek + 6) % 7;
+        var startOfWeek = today.AddDays(-daysFromMonday);
+        
+        var endOfWeek = startOfWeek.AddDays(6);
+        
         return await taskWithSubTaskQuery
-                        .Where(task => task.DueDate.Date >= DateTime.UtcNow.Date &&
-                                       task.DueDate.Date <= DateTime.UtcNow.AddDays(7).Date)
+                        .Where(task => task.DueDate.Date >= startOfWeek &&
+                                       task.DueDate.Date <= endOfWeek)
                         .ToListAsync();
     }
 

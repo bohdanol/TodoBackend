@@ -13,7 +13,8 @@ export default function Clock() {
 
   return (
     <div style={{ fontSize: '2rem', textAlign: 'center', margin: '20px' }}>
-      <h1>Current Time</h1>
+      <h1>Current Date and Time</h1>
+      <p>{time.toLocaleDateString()}</p>
       <p>{time.toLocaleTimeString()}</p>
     </div>
   );

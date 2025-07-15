@@ -38,30 +38,30 @@ public class TaskController(ITaskService taskService) : ControllerBase
     }
 
     [HttpGet("all")]
-    public async Task<IActionResult> GetAllAsync()
+    public async Task<IActionResult> GetAllAsync([FromQuery] String? isCompleted)
     {
-        var tasks = await taskService.GetAllAsync(null);
+        var tasks = await taskService.GetAllAsync(null, isCompleted);
         return Ok(tasks);
     }
 
-    [HttpGet("all/current-week")]
+    [HttpGet("all/this-week")]
     public async Task<IActionResult> GetAllForCurrentWeekAsync()
     {
-        var tasks = await taskService.GetAllAsync(TaskRange.Week);
+        var tasks = await taskService.GetAllAsync(TaskRange.Week, null);
         return Ok(tasks);
     }
 
     [HttpGet("all/today")]
     public async Task<IActionResult> GetAllForTodayAsync()
     {
-        var tasks = await taskService.GetAllAsync(TaskRange.Today);
+        var tasks = await taskService.GetAllAsync(TaskRange.Today, null);
         return Ok(tasks);
     }
 
     [HttpGet("all/tomorrow")]
     public async Task<IActionResult> GetAllForTomorrowAsync()
     {
-        var tasks = await taskService.GetAllAsync(TaskRange.Tomorrow);
+        var tasks = await taskService.GetAllAsync(TaskRange.Tomorrow, null);
         return Ok(tasks);
     }
 

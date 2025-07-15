@@ -9,7 +9,7 @@ namespace Model.Interfaces.Repositories;
 
 public interface ITaskRepository
 {
-    Task<IEnumerable<TaskModel>> GetAllAsync();
+    Task<IEnumerable<TaskModel>> GetAllAsync(String? filter);
     Task<TaskModel> GetByIdAsync(int id);
     Task<TaskModel> AddAsync(TaskModel task);
     Task<TaskModel> UpdateAsync(TaskModel task);

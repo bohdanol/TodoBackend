@@ -1,141 +1,51 @@
 import { useState, useEffect } from 'react';
-import { getTasks } from '../api/tasks';
+import { useLocation } from 'react-router-dom';
+import { getTasks } from '../api/tasks.ts';
+import { Period } from '../helpers/Interfaces.ts';
 
-export default function TaskList({ filter = 'all' }) {
+export default function TaskList({ period }: { period?: Period }) {
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const location = useLocation();
 
-  // Fetch tasks from API
   useEffect(() => {
-    console.log('🔄 TaskList useEffect triggered'); // Debug log
-    let isMounted = true; // Flag to prevent state updates if component unmounted
-    const abortController = new AbortController(); // For cancelling requests
+    setTasks([]);
+    const abortController = new AbortController();
 
     const fetchTasks = async () => {
       try {
-        console.log('📡 Starting API request...'); // Debug log
         setLoading(true);
         setError(null);
-        const fetchedTasks = await getTasks(abortController.signal);
-        console.log('✅ API request successful:', fetchedTasks?.length, 'tasks'); // Debug log
         
-        // Only update state if component is still mounted
-        if (isMounted) {
-          setTasks(fetchedTasks);
+        // Extract isCompleted from URL search params if present
+        const searchParams = new URLSearchParams(location.search);
+        const isCompletedParam = searchParams.get('isCompleted');
+        
+        let apiParams: any = { period };
+        
+        // Add isCompleted filter if it's in the URL
+        if (isCompletedParam !== null) {
+          apiParams.isCompleted = isCompletedParam === 'true';
         }
+        
+        const fetchedTasks = await getTasks(apiParams);
+        setTasks(fetchedTasks);
       } catch (err) {
-        // Ignore cancelled requests
-        if (err.message === 'Request cancelled' || err.name === 'AbortError') {
-          console.log('❌ Request was cancelled/aborted'); // Debug log
-          return;
-        }
-        
-        console.error('Failed to fetch tasks:', err);
-        // Better error handling with Axios
-        const errorMessage = err.response?.data?.message || 
-                            err.response?.statusText || 
-                            err.message || 
-                            'Failed to fetch tasks';
-        
-        // Only update state if component is still mounted
-        if (isMounted) {
-          setError(errorMessage);
-          // Fallback to mock data if API fails
-          setTasks(mockTasks);
-        }
+        console.error('Error fetching tasks:', err);
+        setError(err.message || 'Failed to fetch tasks');
       } finally {
-        if (isMounted) {
-          setLoading(false);
-        }
+        setLoading(false);
       }
     };
 
     fetchTasks();
 
-    // Cleanup function to prevent memory leaks and cancel ongoing requests
     return () => {
-      console.log('🧹 TaskList cleanup - cancelling request'); // Debug log
-      isMounted = false;
-      abortController.abort(); // Cancel any ongoing request
+      abortController.abort();
     };
-  }, []);
+  }, [period, location.search]);
 
-  // Mock tasks data as fallback
-  const mockTasks = [
-    {
-      id: 1,
-      title: 'Complete project proposal',
-      description: 'Finalize the project proposal document and submit to management',
-      isCompleted: false,
-      dueDate: '2025-07-14T17:00:00',
-      createdAt: '2025-07-10T09:00:00',
-      updatedAt: '2025-07-12T14:30:00',
-      priority: 'High',
-      subTasks: []
-    },
-    {
-      id: 2,
-      title: 'Review code changes',
-      description: 'Review pull requests and provide feedback to team members',
-      isCompleted: true,
-      dueDate: '2025-07-13T12:00:00',
-      createdAt: '2025-07-11T10:15:00',
-      updatedAt: '2025-07-13T11:45:00',
-      priority: 'Medium',
-      subTasks: []
-    },
-    {
-      id: 3,
-      title: 'Team meeting at 3 PM',
-      description: 'Weekly standup meeting to discuss project progress',
-      isCompleted: false,
-      dueDate: '2025-07-15T15:00:00',
-      createdAt: '2025-07-14T08:00:00',
-      updatedAt: null,
-      priority: 'Low',
-      subTasks: []
-    },
-    {
-      id: 4,
-      title: 'Update documentation',
-      description: 'Update API documentation with latest changes',
-      isCompleted: false,
-      dueDate: '2025-07-16T18:00:00',
-      createdAt: '2025-07-13T16:20:00',
-      updatedAt: null,
-      priority: 'Medium',
-      subTasks: []
-    }
-  ];
-
-  const getFilteredTasks = () => {
-    const today = new Date().toISOString().split('T')[0];
-    const tomorrow = new Date(Date.now() + 86400000).toISOString().split('T')[0];
-    
-    switch (filter) {
-      case 'today':
-        return tasks.filter(task => task.dueDate.split('T')[0] === today);
-      case 'tomorrow':
-        return tasks.filter(task => task.dueDate.split('T')[0] === tomorrow);
-      case 'this-week':
-        return tasks.filter(task => {
-          const taskDate = new Date(task.dueDate);
-          const now = new Date();
-          const weekFromNow = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
-          return taskDate >= now && taskDate <= weekFromNow;
-        });
-      case 'done':
-        return tasks.filter(task => task.isCompleted);
-      case 'all':
-      default:
-        return tasks;
-    }
-  };
-
-  const filteredTasks = getFilteredTasks();
-
-  // Loading state
   if (loading) {
     return (
       <div style={{ backgroundColor: 'white', borderRadius: '8px', padding: '20px', boxShadow: '0 2px 4px rgba(0,0,0,0.1)', textAlign: 'center' }}>
@@ -144,7 +54,6 @@ export default function TaskList({ filter = 'all' }) {
     );
   }
 
-  // Error state
   if (error && tasks.length === 0) {
     return (
       <div style={{ backgroundColor: 'white', borderRadius: '8px', padding: '20px', boxShadow: '0 2px 4px rgba(0,0,0,0.1)', textAlign: 'center' }}>
@@ -189,13 +98,13 @@ export default function TaskList({ filter = 'all' }) {
 
   return (
     <div style={{ backgroundColor: 'white', borderRadius: '8px', padding: '20px', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }}>
-      {filteredTasks.length === 0 ? (
+      {tasks.length === 0 ? (
         <p style={{ textAlign: 'center', color: '#7f8c8d', fontSize: '1.1rem' }}>
-          No tasks found for {filter === 'all' ? 'this filter' : filter}
+          No tasks found
         </p>
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-          {filteredTasks.map(task => (
+          {tasks.map(task => (
             <div key={task.id} style={{
               padding: '16px',
               border: '1px solid #ecf0f1',
@@ -204,8 +113,8 @@ export default function TaskList({ filter = 'all' }) {
               transition: 'box-shadow 0.2s ease',
               cursor: 'pointer'
             }}
-            onMouseEnter={(e) => e.target.style.boxShadow = '0 2px 8px rgba(0,0,0,0.1)'}
-            onMouseLeave={(e) => e.target.style.boxShadow = 'none'}
+            onMouseEnter={(e) => (e.target as HTMLElement).style.boxShadow = '0 2px 8px rgba(0,0,0,0.1)'}
+            onMouseLeave={(e) => (e.target as HTMLElement).style.boxShadow = 'none'}
             >
               {/* Header with checkbox, title, and priority */}
               <div style={{ display: 'flex', alignItems: 'center', marginBottom: '8px' }}>

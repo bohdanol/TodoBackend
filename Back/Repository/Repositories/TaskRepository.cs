@@ -18,9 +18,8 @@ public class TaskRepository : ITaskRepository
     public async Task<IEnumerable<TaskModel>> GetAllAsync(String? isCompleted)
     {
         var tasks = GetTaskWitSubTasksQuery(_context);
-        if (isCompleted != null && bool.TryParse(isCompleted, out bool isCompletedValue))
-        { 
-            tasks = tasks.Where(t => t.IsCompleted == isCompletedValue);
+        if (isCompleted != null) { 
+            tasks = tasks.Where(t => t.IsCompleted == true);
         }
         return await tasks.ToListAsync();
     }

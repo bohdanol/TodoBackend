@@ -23,11 +23,42 @@ public class TaskController(ITaskService taskService) : ControllerBase
         return Ok(task);
     }
 
-    [HttpPut]
-    public async Task<IActionResult> UpdateTaskAsync(TaskDto task)
+    [HttpPut("{id}")]
+    public async Task<IActionResult> UpdateTaskAsync(int id, TaskDto task)
     {
-        var updatedTask = await taskService.UpdateAsync(task);
-        return Ok(updatedTask);
+
+        Console.WriteLine(id);
+        Console.WriteLine(task);
+        if (task == null)
+        {
+            return BadRequest("Task data is required");
+        }
+
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
+        if (id != task.Id)
+        {
+            return BadRequest("Route ID does not match task ID");
+        }
+
+        try
+        {
+            var updatedTask = await taskService.UpdateAsync(task);
+            if (updatedTask == null)
+            {
+                return NotFound($"Task with ID {id} not found");
+            }
+
+            return Ok(updatedTask);
+        }
+        catch (Exception)
+        {
+            // Log the exception here
+            return StatusCode(500, "An error occurred while updating the task");
+        }
     }
 
     [HttpPost]

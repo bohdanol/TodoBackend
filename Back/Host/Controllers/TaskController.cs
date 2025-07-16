@@ -26,9 +26,6 @@ public class TaskController(ITaskService taskService) : ControllerBase
     [HttpPut("{id}")]
     public async Task<IActionResult> UpdateTaskAsync(int id, TaskDto task)
     {
-
-        Console.WriteLine(id);
-        Console.WriteLine(task);
         if (task == null)
         {
             return BadRequest("Task data is required");
@@ -64,12 +61,17 @@ public class TaskController(ITaskService taskService) : ControllerBase
     [HttpPost]
     public async Task<IActionResult> AddTaskAsync(TaskDto task)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         var addedTask = await taskService.AddAsync(task);
         return Ok(addedTask);
     }
 
     [HttpGet("all")]
-    public async Task<IActionResult> GetAllAsync([FromQuery] String? isCompleted)
+    public async Task<IActionResult> GetAllAsync([FromQuery] String? isCompleted, object value)
     {
         var tasks = await taskService.GetAllAsync(null, isCompleted);
         return Ok(tasks);

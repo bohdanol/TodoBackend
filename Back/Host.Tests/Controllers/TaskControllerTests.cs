@@ -25,6 +25,7 @@ public class TaskControllerTests
     [Test]
     public async Task GetByIdAsync_WithValidId_ReturnsOkResult()
     {
+        // Arrange
         var taskId = 1;
         var task = new TaskModel
         {
@@ -37,8 +38,10 @@ public class TaskControllerTests
         };
         _taskService.GetByIdAsync(taskId).Returns(task);
 
+        // Act
         var result = await _controller.GetByIdAsync(taskId);
 
+        // Assert
         Assert.That(result, Is.InstanceOf<OkObjectResult>());
         var okResult = result as OkObjectResult;
         Assert.That(okResult?.Value, Is.EqualTo(task));
@@ -47,17 +50,22 @@ public class TaskControllerTests
     [Test]
     public async Task GetByIdAsync_WithInvalidId_ReturnsBadResult()
     {
+        // Arrange
         var taskId = 1;
 
         _taskService.GetByIdAsync(taskId).Returns((TaskModel?)null);
 
+        // Act
         var result = await _controller.GetByIdAsync(taskId);
+
+        // Assert
         Assert.That(result, Is.InstanceOf<NotFoundResult>());
     }
 
     [Test]
     public async Task GetAllAsync_WithNoFilters_ReturnsOkResult()
     {
+        // Arrange
         var tasks = new List<TaskModel>
         {
             new TaskModel
@@ -72,8 +80,10 @@ public class TaskControllerTests
         };
         _taskService.GetAllAsync(null, null).Returns(tasks);
 
+        // Act
         var result = await _controller.GetAllAsync(null, null);
 
+        // Assert
         Assert.That(result, Is.InstanceOf<OkObjectResult>());
         var okResult = result as OkObjectResult;
         Assert.That(okResult?.Value, Is.EqualTo(tasks));
@@ -82,6 +92,7 @@ public class TaskControllerTests
     [Test]
     public async Task GetAllAsync_WithCompletedFilter_ReturnsFilteredTasks()
     {
+        // Arrange
         var completedTasks = new List<TaskModel>
         {
             new TaskModel
@@ -97,8 +108,10 @@ public class TaskControllerTests
         };
         _taskService.GetAllAsync(null, "true").Returns(completedTasks);
 
+        // Act
         var result = await _controller.GetAllAsync("true", null);
-        
+
+        // Assert
         Assert.That(result, Is.InstanceOf<OkObjectResult>());
         var okResult = result as OkObjectResult;
         Assert.That(okResult?.Value, Is.EqualTo(completedTasks));
@@ -108,6 +121,7 @@ public class TaskControllerTests
     [Test]
     public async Task AddTaskAsync_WithValidTask_ReturnsOkResult()
     {
+        // Arrange
         var taskDto = new TaskDto
         {
             Title = "New Task",
@@ -126,8 +140,10 @@ public class TaskControllerTests
         };
         _taskService.AddAsync(taskDto).Returns(createdTask);
 
+        // Act
         var result = await _controller.AddTaskAsync(taskDto);
 
+        // Assert
         Assert.That(result, Is.InstanceOf<OkObjectResult>());
         var okResult = result as OkObjectResult;
         Assert.That(okResult?.Value, Is.EqualTo(createdTask));
@@ -137,6 +153,7 @@ public class TaskControllerTests
     [Test]
     public async Task AddTaskAsync_WithInvalidTask_ReturnsBadRequest()
     {
+        // Arrange
         var taskDto = new TaskDto
         {
             Title = "",
@@ -147,14 +164,17 @@ public class TaskControllerTests
 
         _controller.ModelState.AddModelError("Title", "Title is required");
 
+        // Act
         var result = await _controller.AddTaskAsync(taskDto);
 
+        // Assert
         Assert.That(result, Is.InstanceOf<BadRequestObjectResult>());
     }
 
     [Test]
     public async Task UpdateTaskAsync_WithValidTask_ReturnsOkResult()
     {
+        // Arrange
         var taskId = 1;
         var taskDto = new TaskDto
         {
@@ -177,8 +197,10 @@ public class TaskControllerTests
         };
         _taskService.UpdateAsync(taskDto).Returns(updatedTask);
 
+        // Act
         var result = await _controller.UpdateTaskAsync(taskId, taskDto);
 
+        // Assert
         Assert.That(result, Is.InstanceOf<OkObjectResult>());
         var okResult = result as OkObjectResult;
         Assert.That(okResult?.Value, Is.EqualTo(updatedTask));
@@ -187,6 +209,7 @@ public class TaskControllerTests
     [Test]
     public async Task UpdateTaskAsync_WithMismatchedIds_ReturnsBadRequest()
     {
+        // Arrange
         var taskId = 1;
         var taskDto = new TaskDto
         {
@@ -197,14 +220,17 @@ public class TaskControllerTests
             Priority = Priority.Low
         };
 
+        // Act
         var result = await _controller.UpdateTaskAsync(taskId, taskDto);
 
+        // Assert
         Assert.That(result, Is.InstanceOf<BadRequestObjectResult>());
     }
 
     [Test]
     public async Task UpdateTaskAsync_WithInvalidModelState_ReturnsBadRequest()
     {
+        // Arrange
         var taskId = 1;
         var taskDto = new TaskDto
         {
@@ -217,19 +243,24 @@ public class TaskControllerTests
 
         _controller.ModelState.AddModelError("Title", "Title is required");
 
+        // Act
         var result = await _controller.UpdateTaskAsync(taskId, taskDto);
 
+        // Assert
         Assert.That(result, Is.InstanceOf<BadRequestObjectResult>());
     }
 
     [Test]
     public async Task DeleteAsync_WithValidId_ReturnsOkResult()
     {
+        // Arrange
         var taskId = 1;
         _taskService.DeleteAsync(taskId).Returns(taskId);
-        
+
+        // Act
         var result = await _controller.DeleteAsync(taskId);
 
+        // Assert
         Assert.That(result, Is.InstanceOf<OkObjectResult>());
         var okResult = result as OkObjectResult;
         Assert.That(okResult?.Value, Is.EqualTo(taskId));
@@ -238,17 +269,21 @@ public class TaskControllerTests
     [Test]
     public async Task DeleteAsync_WithNonExistentId_ReturnsNotFound()
     {
+        // Arrange
         var taskId = 999;
         _taskService.DeleteAsync(taskId).Returns((int?)null);
 
+        // Act
         var result = await _controller.DeleteAsync(taskId);
 
+        // Assert
         Assert.That(result, Is.InstanceOf<NotFoundResult>());
     }
 
     [Test]
     public async Task GetAllForTodayAsync_ReturnsOkResult()
     {
+        // Arrange
         var todayTasks = new List<TaskModel>
         {
             new TaskModel
@@ -263,8 +298,10 @@ public class TaskControllerTests
         };
         _taskService.GetAllAsync(TaskRange.Today, null).Returns(todayTasks);
 
+        // Act
         var result = await _controller.GetAllForTodayAsync();
 
+        // Assert
         Assert.That(result, Is.InstanceOf<OkObjectResult>());
         var okResult = result as OkObjectResult;
         Assert.That(okResult?.Value, Is.EqualTo(todayTasks));
@@ -274,6 +311,7 @@ public class TaskControllerTests
     [Test]
     public async Task GetAllForTomorrowAsync_ReturnsOkResult()
     {
+        // Arrange
         var tomorrowTasks = new List<TaskModel>
         {
             new TaskModel
@@ -288,8 +326,10 @@ public class TaskControllerTests
         };
         _taskService.GetAllAsync(TaskRange.Tomorrow, null).Returns(tomorrowTasks);
 
+        // Act
         var result = await _controller.GetAllForTomorrowAsync();
 
+        // Assert
         Assert.That(result, Is.InstanceOf<OkObjectResult>());
         var okResult = result as OkObjectResult;
         Assert.That(okResult?.Value, Is.EqualTo(tomorrowTasks));
@@ -299,6 +339,7 @@ public class TaskControllerTests
     [Test]
     public async Task GetAllForCurrentWeekAsync_ReturnsOkResult()
     {
+        // Arrange
         var weekTasks = new List<TaskModel>
         {
             new TaskModel
@@ -313,8 +354,10 @@ public class TaskControllerTests
         };
         _taskService.GetAllAsync(TaskRange.Week, null).Returns(weekTasks);
 
+        // Act
         var result = await _controller.GetAllForCurrentWeekAsync();
 
+        // Assert
         Assert.That(result, Is.InstanceOf<OkObjectResult>());
         var okResult = result as OkObjectResult;
         Assert.That(okResult?.Value, Is.EqualTo(weekTasks));

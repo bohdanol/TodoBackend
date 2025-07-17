@@ -20,7 +20,6 @@ public class MappingProfileTest
     {
         var services = new ServiceCollection();
 
-        // Manually configure the mappings since the internal MappingProfile is not accessible
         services.AddAutoMapper(cfg =>
         {
             cfg.CreateMap<TaskDto, TaskModel>().ReverseMap();
@@ -169,7 +168,7 @@ public class MappingProfileTest
         {
             Id = 1,
             Title = "Test Task",
-            Description = "Valid Description", // Required in TaskDto
+            Description = "Valid Description",
             CreatedAt = DateTime.UtcNow,
             DueDate = DateTime.UtcNow.AddDays(7)
         };
@@ -451,8 +450,8 @@ public class MappingProfileTest
         Assert.That(model.Description, Is.EqualTo(dto.Description));
         Assert.That(model.CreatedAt, Is.EqualTo(dto.CreatedAt));
         Assert.That(model.DueDate, Is.EqualTo(dto.DueDate));
-        Assert.That(model.IsCompleted, Is.False); // Default value
-        Assert.That(model.Priority, Is.EqualTo(Priority.Low)); // Default enum value
+        Assert.That(model.IsCompleted, Is.False);
+        Assert.That(model.Priority, Is.EqualTo(Priority.Low));
     }
 
     [Test]
@@ -475,8 +474,8 @@ public class MappingProfileTest
         Assert.That(model.Title, Is.EqualTo(dto.Title));
         Assert.That(model.CreatedAt, Is.EqualTo(dto.CreatedAt));
         Assert.That(model.DueDate, Is.EqualTo(dto.DueDate));
-        Assert.That(model.IsCompleted, Is.False); // Default value
-        Assert.That(model.Priority, Is.EqualTo(Priority.Low)); // Default enum value
+        Assert.That(model.IsCompleted, Is.False);
+        Assert.That(model.Priority, Is.EqualTo(Priority.Low));
     }
 
     [Test]

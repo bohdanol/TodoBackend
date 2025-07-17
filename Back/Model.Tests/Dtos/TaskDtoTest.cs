@@ -18,7 +18,7 @@ public class TaskDtoTest
         var taskDto = new TaskDto
         {
             Title = "Test Task",
-            Description = "Valid description", // Required field
+            Description = "Valid description",
             CreatedAt = DateTime.UtcNow,
             DueDate = DateTime.UtcNow.AddDays(1)
         };
@@ -93,7 +93,7 @@ public class TaskDtoTest
         // Arrange
         var taskDto = new TaskDto
         {
-            Title = new string('A', 251), // Exceeds 250 character limit
+            Title = new string('A', 251),
             Description = "Valid description",
             CreatedAt = DateTime.UtcNow,
             DueDate = DateTime.UtcNow.AddDays(1)
@@ -112,7 +112,7 @@ public class TaskDtoTest
         // Arrange
         var taskDto = new TaskDto
         {
-            Title = new string('A', 250), // Exactly 250 characters
+            Title = new string('A', 250),
             Description = "Valid description",
             CreatedAt = DateTime.UtcNow,
             DueDate = DateTime.UtcNow.AddDays(1)
@@ -132,7 +132,7 @@ public class TaskDtoTest
         var taskDto = new TaskDto
         {
             Title = "Valid Title",
-            Description = null, // Null description should fail because it's [Required]
+            Description = null,
             CreatedAt = DateTime.UtcNow,
             DueDate = DateTime.UtcNow.AddDays(1)
         };
@@ -151,7 +151,7 @@ public class TaskDtoTest
         var taskDto = new TaskDto
         {
             Title = "Valid Title",
-            Description = "", // Empty description should fail because MinimumLength = 1
+            Description = "",
             CreatedAt = DateTime.UtcNow,
             DueDate = DateTime.UtcNow.AddDays(1)
         };
@@ -170,7 +170,7 @@ public class TaskDtoTest
         var taskDto = new TaskDto
         {
             Title = "Valid Title",
-            Description = new string('B', 501), // Exceeds 500 character limit
+            Description = new string('B', 501),
             CreatedAt = DateTime.UtcNow,
             DueDate = DateTime.UtcNow.AddDays(1)
         };
@@ -189,7 +189,7 @@ public class TaskDtoTest
         var taskDto = new TaskDto
         {
             Title = "Valid Title",
-            Description = new string('B', 500), // Exactly 500 characters
+            Description = new string('B', 500),
             CreatedAt = DateTime.UtcNow,
             DueDate = DateTime.UtcNow.AddDays(1)
         };
@@ -208,7 +208,7 @@ public class TaskDtoTest
         var taskDto = new TaskDto
         {
             Title = "Valid Title",
-            Description = "A", // Exactly 1 character (minimum allowed)
+            Description = "A",
             CreatedAt = DateTime.UtcNow,
             DueDate = DateTime.UtcNow.AddDays(1)
         };
@@ -369,7 +369,7 @@ public class TaskDtoTest
             Description = "Valid description",
             CreatedAt = DateTime.UtcNow,
             DueDate = DateTime.UtcNow.AddDays(1),
-            Priority = (Priority)999 // Invalid enum value
+            Priority = (Priority)999
         };
 
         // Act

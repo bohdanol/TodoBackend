@@ -5,11 +5,6 @@ using Model.Interfaces.Repositories;
 using Model.Models;
 using Model.Services;
 using NSubstitute;
-using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Model.Tests.Services;
 
